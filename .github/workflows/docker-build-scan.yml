@@ -23,48 +23,31 @@ jobs:
     - name: Build Docker image
       run: docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} .
 
-    - name: Install Trivy
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-        sudo apt-get update
-        sudo apt-get install -y trivy
-
-    - name: Scan Docker image with Trivy
-      id: trivy-scan
-      continue-on-error: true
-      run: |
-        trivy image --exit-code 1 --severity HIGH,CRITICAL --format json --output trivy-results.json ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
-        echo "scan_exit_code=$?" >> $GITHUB_OUTPUT
-
-    - name: Check for vulnerabilities
-      id: vuln_check
-      run: |
-        vulnerabilities=$(jq '.Results[].Vulnerabilities | length' trivy-results.json | jq -s 'add // 0')
-        echo "Vulnerabilities found: $vulnerabilities"
-        echo "VULN_COUNT=$vulnerabilities" >> $GITHUB_ENV
-        if [ $vulnerabilities -gt 0 ]; then
-          echo "has_vulnerabilities=true" >> $GITHUB_OUTPUT
-        else
-          echo "has_vulnerabilities=false" >> $GITHUB_OUTPUT
-        fi
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      id: trivy
+      with:
+        image-ref: '${{ env.DOCKER_IMAGE }}:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'
 
     - name: Send Slack notification
-      if: steps.vuln_check.outputs.has_vulnerabilities == 'true'
+      if: failure()
       uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
         text: |
           Vulnerabilities found in Docker image. 
-          Count: ${{ env.VULN_COUNT }}
           Image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          Trivy Scan Result:
+          ${{ steps.trivy.outputs.sarif }}
         webhook_url: ${{ secrets.SLACK_WEBHOOK }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
     - name: Fail if vulnerabilities found
-      if: steps.trivy-scan.outputs.scan_exit_code == '1'
+      if: failure()
       run: exit 1
