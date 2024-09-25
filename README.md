@@ -19,6 +19,19 @@
 <br>
 
 ## Trivy란 ? :mag_right:
+: 취약점을 간단히 스캔할 수 있는 도구 중 하나, 가장 가볍고 기능이 많은 툴
+
+- **Misconfiguration** (잘못된 구성인지)
+- **Vulnerabilities** (보안에 취약한지)
+<br>
+
+### Trivy의 스캔 가능 대상
+- Container Image
+- Filesystem and rootfs
+- git repository
+- kubernetes
+
+<br>
 
 ## Trivy 설치 및 기본 사용법
 ```
