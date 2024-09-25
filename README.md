@@ -157,7 +157,7 @@ jobs:
 
 ### 3. main 브랜치에 push하거나 pull request를 열 때 실행
  
-#### trivy에 의해 보안취약점이 발견된 경우 
+#### ⚠️ trivy에 의해 보안취약점이 발견된 경우 
 
 ![image](https://github.com/user-attachments/assets/e557c853-4e15-4922-be2c-fa30fb8936c7)
 <br>
@@ -165,16 +165,16 @@ jobs:
 <br>
 ![image](https://github.com/user-attachments/assets/18292f20-b97f-4a1e-80e9-0a9ccf54f8f9)
 
-보안 취약점이 발생한 경우 github actions를 통해 slack으로 메세지를 전송
+-> 보안 취약점이 발생한 경우 github actions를 통해 slack으로 메세지를 전송
 
-#### trivy에 의해 보안 검사를 통과한 경우 
+#### ✔️ trivy에 의해 보안 검사를 통과한 경우 
 ![image](https://github.com/user-attachments/assets/34189785-032e-4de5-9c68-80e6b3edf9b3)
 <br>
 ![image](https://github.com/user-attachments/assets/0a6db3f2-a700-4895-8f8a-c52fd286b26d)
 <br>
 ![image](https://github.com/user-attachments/assets/d0bdaf67-e5b9-496c-b61e-1c4a548f6dd7)
 
-빌드 성공 후 보안 취약점 검사 통과시 위와 같은 메세지를 전송
+-> 빌드 성공 후 보안 취약점 검사 통과시 위와 같은 메세지를 전송
 
 ## 결론 
 
