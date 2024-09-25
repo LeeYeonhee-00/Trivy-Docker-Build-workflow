@@ -47,6 +47,8 @@ sudo apt-get install trivy
 - 파일 시스템 모드: 파일 시스템의 취약점을 검사
 - 리포지토리 모드: Git 저장소의 소스 코드 취약점 스캔
 
+<br>
+
 ## Github Actions Workflow with Trivy💻
 1. Docker Build를 진행
 2. Image가 만들어지면 Scan 실행
@@ -178,6 +180,8 @@ jobs:
 
 **자동화된 보안 검증 및 실시간 대응**:<br> GitHub Actions와 Trivy, Slack을 통합함으로써 CI 과정에서 자동으로 보안 취약점을 스캔하고, 실시간으로 Slack 알림을 통해 문제를 빠르게 인지하고 대응할 수 있습니다.  이를 통해 배포 전 보안 문제를 신속히 해결할 수 있습니다.
 
-
-
-
+## 참고 자료
+- https://blog.naver.com/isc0304/222510710171
+- https://faun.pub/how-to-scan-docker-images-e08a7b909ea0
+- https://betterprogramming.pub/static-analysis-of-container-images-with-trivy-8d297c4f1dd3
+- https://velog.io/@nigasa12/Github-Actions%EC%99%80-Trivy%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-Docker-Image-Build-%EC%8B%9C-%EC%B7%A8%EC%95%BD%EC%A0%90-%EA%B2%80%EC%82%AC
