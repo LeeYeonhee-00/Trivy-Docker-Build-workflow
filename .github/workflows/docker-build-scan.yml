@@ -31,16 +31,18 @@ jobs:
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: 'trivy-results.sarif'
+      continue-on-error: true
 
     - name: Check for vulnerabilities
       id: vuln_check
       run: |
         vulnerabilities=$(jq '.runs[].results[].ruleId' trivy-results.sarif | wc -l)
+        echo "Vulnerabilities found: $vulnerabilities"
         echo "VULN_COUNT=$vulnerabilities" >> $GITHUB_ENV
         if [ $vulnerabilities -gt 0 ]; then
-          echo "::set-output name=has_vulnerabilities::true"
+          echo "has_vulnerabilities=true" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=has_vulnerabilities::false"
+          echo "has_vulnerabilities=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Send Slack notification
@@ -48,5 +50,8 @@ jobs:
       uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
-        text: 'Vulnerabilities found in Docker image'
+        text: 'Vulnerabilities found in Docker image. Count: ${{ env.VULN_COUNT }}'
         webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
