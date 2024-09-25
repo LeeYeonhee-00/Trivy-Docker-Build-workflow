@@ -1,0 +1,52 @@
+name: Docker Build and Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOCKER_IMAGE: myusername/my-docker-image
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} .
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ env.DOCKER_IMAGE }}:${{ github.sha }}'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    - name: Check for vulnerabilities
+      id: vuln_check
+      run: |
+        vulnerabilities=$(jq '.runs[].results[].ruleId' trivy-results.sarif | wc -l)
+        echo "VULN_COUNT=$vulnerabilities" >> $GITHUB_ENV
+        if [ $vulnerabilities -gt 0 ]; then
+          echo "::set-output name=has_vulnerabilities::true"
+        else
+          echo "::set-output name=has_vulnerabilities::false"
+        fi
+
+    - name: Send Slack notification
+      if: steps.vuln_check.outputs.has_vulnerabilities == 'true'
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: 'Vulnerabilities found in Docker image'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
