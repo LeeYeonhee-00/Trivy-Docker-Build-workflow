@@ -46,17 +46,16 @@ sudo apt-get install trivy
 - 이미지 모드: 도커 컨테이너 이미지에 대한 취약점 스캔
 - 파일 시스템 모드: 파일 시스템의 취약점을 검사
 - 리포지토리 모드: Git 저장소의 소스 코드 취약점 스캔
-
 <br>
 
 ## Github Actions Workflow with Trivy💻
 1. Docker Build를 진행
 2. Image가 만들어지면 Scan 실행
 3. 결과를 github로 전송
-4. 내용 전송
+4. 내용 전송 <br>
 4-a. 결과를 확인해 취약점이 있다면 slack로 그 사실을 전송 <br>
 4-b. 결과를 확인해 취약점이 없으면 아무것도 안하고 종료
-
+<br>
 
 ### 1. slack webhook url을 해당 github repository에 등록
 ![image](https://github.com/user-attachments/assets/5615cc42-f67a-490d-a65b-6c476ae70dc4)
