@@ -1,5 +1,5 @@
 # <p align="center"> Trivy Docker Build 
-### Trivy를 사용한 도커 컨테이너 이미지 분석 실습
+### Trivy를 사용한 도커 컨테이너 이미지 취약점 감지
 ---
 
 <h2 style="font-size: 25px;"> 개발팀원👨‍👨‍👧‍👦<br>
@@ -14,7 +14,7 @@
 <br>
 
 ## 프로젝트 목적 🌷
-컨테이너 보안과 CI/CD 파이프라인 통합을 통해 소프트웨어 배포 과정에서 보안 취약점을 미리 식별하고 해결하는 과정 실습하기 위함.
+CI 과정 중 trivy 검사를 진행하여 컨테이너 보안 취약점을 미리 식별하여 위험성을 낮춤
 
 <br>
 
@@ -148,10 +148,9 @@ jobs:
       run: exit 1
 ```
 
-- Docker build 후 생성된 이미지 파일을 trivy를 이용하여 보안 검사 진행. 
-- Severity 단계가 CRITICAL,HIGH 에 해당하는 report가 나올경우
-- 결과물에 대해 push를 진행하지 않습니다.
-- report결과를 slack을 통해 개발자에게 전달합니다.  
+-> Docker image build 후 생성된 이미지 파일을 trivy를 이용하여 보안 검사 진행 <br>
+-> Security 단계가 CRITICAL,HIGH 에 해당하는 report가 나올 경우 결과물에 대해 push를 진행하지 않음<br>
+-> report결과를 slack을 통해 개발자에게 전달  
 <br>
 
 ### 3. main 브랜치에 push하거나 pull request를 열 때 실행
@@ -175,7 +174,9 @@ jobs:
 
 빌드 성공 후 보안 취약점 검사 통과시 위와 같은 메세지를 전송
 
+## 결론 
 
+**자동화된 보안 검증 및 실시간 대응**:<br> GitHub Actions와 Trivy, Slack을 통합함으로써 CI 과정에서 자동으로 보안 취약점을 스캔하고, 실시간으로 Slack 알림을 통해 문제를 빠르게 인지하고 대응할 수 있습니다.  이를 통해 배포 전 보안 문제를 신속히 해결할 수 있습니다.
 
 
 
